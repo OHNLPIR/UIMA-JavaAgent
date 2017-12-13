@@ -33,7 +33,7 @@ public final class AnnotationLeaf implements AnnotationIndex {
         }
         LinkedList<T> ret = new LinkedList<T>();
         for (AnnotationFS ann : annColl) {
-            if (ann.getBegin() >= start && ann.getEnd() <= end) {
+            if (ann.getBegin() <= start && ann.getEnd() >= end) {
                 if (clazz.isInstance(ann)) {
                     //noinspection unchecked
                     ret.add((T) ann);
@@ -50,7 +50,7 @@ public final class AnnotationLeaf implements AnnotationIndex {
         }
         LinkedList<T> ret = new LinkedList<T>();
         for (AnnotationFS ann : annColl) {
-            if (ann.getBegin() <= start && ann.getEnd() >= end) {
+            if (ann.getBegin() >= start && ann.getEnd() <= end) {
                 if (clazz.isInstance(ann)) {
                     //noinspection unchecked
                     ret.add((T) ann);
