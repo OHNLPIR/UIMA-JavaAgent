@@ -14,5 +14,6 @@ Moreover, this allows for a degree of flexibility: the performance enhancements 
 99% of running UIMA applications and use cases, but in the 1% that it does not, one can simply choose not to run the
 agent and program will remain unaffected
 
-#Usage
+## Usage
+
 `java -javaagent:PATH/TO/UIMA-JavaAgent.jar ...` to enable, host program will remain uninstrumented if the -javaagent flag is not set 
