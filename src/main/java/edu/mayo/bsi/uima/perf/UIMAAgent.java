@@ -21,22 +21,16 @@ public class UIMAAgent {
     public static void premain(String arg, Instrumentation inst) {
         new AgentBuilder.Default()
                 // Redefine CASImpl
-                .type(ElementMatchers.named("org.apache.uima.cas.FSIndexRepository"))
+                .type(ElementMatchers.named("org.apache.uima.cas.impl.FSIndexRepositoryImpl"))
                 .transform(new AgentBuilder.Transformer() {
                     @Override
                     public DynamicType.Builder<?> transform(DynamicType.Builder<?> builder, TypeDescription type,
                                                             ClassLoader ignored, JavaModule ignored2) {
-                        return builder.method(ElementMatchers.named("addFs"))
+                        return builder.method(ElementMatchers.named("addFS"))
                                 .intercept(MethodDelegation.to(AddFsToIndexesInterceptor.class))
-                                .method(ElementMatchers.named("removeFs"))
-                                .intercept(MethodDelegation.to(RemoveFSFromIndexesInterceptor.class));
-                    }
-                })
-                .type(ElementMatchers.named("org.apache.uima.cas.impl.FSIndexRepositoryImpl"))
-                .transform(new AgentBuilder.Transformer() {
-                    @Override
-                    public DynamicType.Builder<?> transform(DynamicType.Builder<?> builder, TypeDescription typeDescription, ClassLoader classLoader, JavaModule module) {
-                        return builder.method(ElementMatchers.named("flush"))
+                                .method(ElementMatchers.named("removeFS"))
+                                .intercept(MethodDelegation.to(RemoveFSFromIndexesInterceptor.class))
+                                .method(ElementMatchers.named("flush"))
                                 .intercept(MethodDelegation.to(FSIndexRepositoryCleanupInterceptor.class));
                     }
                 })
