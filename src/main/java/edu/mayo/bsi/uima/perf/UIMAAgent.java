@@ -3,7 +3,7 @@ package edu.mayo.bsi.uima.perf;
 import edu.mayo.bsi.uima.perf.interceptors.perf.SelectCoveredInterceptor;
 import edu.mayo.bsi.uima.perf.interceptors.perf.SelectCoveringInterceptor;
 import edu.mayo.bsi.uima.perf.interceptors.sync.AddFsToIndexesInterceptor;
-import edu.mayo.bsi.uima.perf.interceptors.sync.CASCleanupInterceptor;
+import edu.mayo.bsi.uima.perf.interceptors.sync.FSIndexRepositoryCleanupInterceptor;
 import edu.mayo.bsi.uima.perf.interceptors.sync.RemoveFSFromIndexesInterceptor;
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.description.type.TypeDescription;
@@ -21,17 +21,23 @@ public class UIMAAgent {
     public static void premain(String arg, Instrumentation inst) {
         new AgentBuilder.Default()
                 // Redefine CASImpl
-                .type(ElementMatchers.named("org.apache.uima.cas.impl.CASImpl"))
+                .type(ElementMatchers.named("org.apache.uima.cas.FSIndexRepository"))
                 .transform(new AgentBuilder.Transformer() {
                     @Override
                     public DynamicType.Builder<?> transform(DynamicType.Builder<?> builder, TypeDescription type,
                                                             ClassLoader ignored, JavaModule ignored2) {
-                        return builder.method(ElementMatchers.named("addFsToIndexes"))
+                        return builder.method(ElementMatchers.named("addFs"))
                                 .intercept(MethodDelegation.to(AddFsToIndexesInterceptor.class))
-                                .method(ElementMatchers.named("removeFsFromIndexes"))
-                                .intercept(MethodDelegation.to(RemoveFSFromIndexesInterceptor.class))
-                                .method(ElementMatchers.named("reset"))
-                                .intercept(MethodDelegation.to(CASCleanupInterceptor.class));
+                                .method(ElementMatchers.named("removeFs"))
+                                .intercept(MethodDelegation.to(RemoveFSFromIndexesInterceptor.class));
+                    }
+                })
+                .type(ElementMatchers.named("org.apache.uima.cas.impl.FSIndexRepositoryImpl"))
+                .transform(new AgentBuilder.Transformer() {
+                    @Override
+                    public DynamicType.Builder<?> transform(DynamicType.Builder<?> builder, TypeDescription typeDescription, ClassLoader classLoader, JavaModule module) {
+                        return builder.method(ElementMatchers.named("flush"))
+                                .intercept(MethodDelegation.to(FSIndexRepositoryCleanupInterceptor.class));
                     }
                 })
                 // Redefine JCasUtil
