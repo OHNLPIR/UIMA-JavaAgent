@@ -3,7 +3,6 @@ package edu.mayo.bsi.uima.perf;
 import edu.mayo.bsi.uima.perf.structures.AnnotationIndex;
 import edu.mayo.bsi.uima.perf.structures.AnnotationRoot;
 import org.apache.uima.cas.*;
-import org.apache.uima.cas.impl.CASImpl;
 import org.apache.uima.cas.impl.FSIndexRepositoryImpl;
 import org.apache.uima.fit.util.CasUtil;
 import org.apache.uima.fit.util.JCasUtil;
@@ -147,9 +146,9 @@ public class AnnotationIndices {
         if (!(indexRepository instanceof FSIndexRepositoryImpl)) {
             throw new IllegalStateException("Non FSIndexRepositoryImpl implementation being used as an index repository!");
         }
-        CASImpl cas;
+        CAS cas;
         try {
-            cas = (CASImpl) FS_INDEX_CAS_FIELD.get(indexRepository);
+            cas = (CAS) FS_INDEX_CAS_FIELD.get(indexRepository);
         } catch (IllegalAccessException e) {
             throw new IllegalStateException(e);
         }
@@ -220,9 +219,9 @@ public class AnnotationIndices {
         if (!(indexRepository instanceof FSIndexRepositoryImpl)) {
             throw new IllegalStateException("Non FSIndexRepositoryImpl implementation being used as an index repository!");
         }
-        CASImpl cas;
+        CAS cas;
         try {
-            cas = (CASImpl) FS_INDEX_CAS_FIELD.get(indexRepository);
+            cas = (CAS) FS_INDEX_CAS_FIELD.get(indexRepository);
         } catch (IllegalAccessException e) {
             throw new IllegalStateException(e);
         }
